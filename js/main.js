@@ -73,10 +73,10 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  */
 initMap = () => {
   self.newMap = L.map('map', {
-        center: [40.722216, -73.987501],
-        zoom: 12,
-        scrollWheelZoom: false
-      });
+    center: [40.722216, -73.987501],
+    zoom: 12,
+    scrollWheelZoom: false
+  });
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
     mapboxToken: 'pk.eyJ1IjoibW9oYW1lZC1lbWFkOTciLCJhIjoiY2pqdGxvNGZhOTVwaDNrcDFleDRjdXFlMSJ9.gpyPtcOIcq9XRbGNrH9v_Q',
     maxZoom: 18,
@@ -192,13 +192,14 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.newMap);
     marker.on("click", onClick);
+
     function onClick() {
       window.location.href = marker.options.url;
     }
     self.markers.push(marker);
   });
 
-} 
+}
 /* addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
@@ -210,3 +211,35 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 } */
 
+// installing service worker
+// check if the browser support service worker
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.register('/sw.js').then(function (reg) {
+    if (reg.waiting) {
+      console.log('there is waiting');
+      if (confirm('there is new version, are you want to get it?!')) {
+        
+      } else {
+        self.skipWaiting();
+      }
+    }
+
+    if (reg.installing) {
+      console.log('there is installing');
+      // Ensure refresh is only called once.
+      // This works around a bug in "force update on reload".
+      var refreshing;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (refreshing) return;
+        window.location.reload();
+        refreshing = true;
+      });
+      return;
+    }
+
+  }).catch(function (err) {
+    console.log('service worker register failed', err);
+  });
+} else {
+  console.log('service worker not supported')
+}
