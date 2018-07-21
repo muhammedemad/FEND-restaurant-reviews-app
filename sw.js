@@ -1,4 +1,4 @@
-let cacheVersion = 'version-1';
+let cacheVersion = 'version-5';
 
 // cache the application
 self.addEventListener('install', function (event) {

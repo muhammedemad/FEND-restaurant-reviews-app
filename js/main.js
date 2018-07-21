@@ -215,12 +215,15 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 // check if the browser support service worker
 if (navigator.serviceWorker) {
   navigator.serviceWorker.register('/sw.js').then(function (reg) {
+    // checking the waiting versions
     if (reg.waiting) {
-      console.log('there is waiting');
       if (confirm('there is new version, are you want to get it?!')) {
         
       } else {
-        self.skipWaiting();
+        (function(event){
+          event.worker.skipWaiting();
+        })()
+        
       }
     }
 
