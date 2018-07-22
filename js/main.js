@@ -1,8 +1,8 @@
 let restaurants,
   neighborhoods,
-  cuisines
-var newMap
-var markers = []
+  cuisines;
+var newMap;
+let markers = [];
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -215,30 +215,38 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 // check if the browser support service worker
 if (navigator.serviceWorker) {
   navigator.serviceWorker.register('/sw.js').then(function (reg) {
-    // checking the waiting versions
-    if (reg.waiting) {
-      if (confirm('there is new version, are you want to get it?!')) {
-        
-      } else {
-        (function(event){
-          event.worker.skipWaiting();
-        })()
-        
+    // note that this code from stack over flow link here https://stackoverflow.com/questions/40100922/activate-updated-service-worker-on-refresh
+    // it's the best answer
+    function listenForWaitingServiceWorker(reg, callback) {
+      function awaitStateChange() {
+        reg.installing.addEventListener('statechange', function () {
+          if (this.state === 'installed') callback(reg);
+        });
       }
+      if (!reg) return;
+      if (reg.waiting) return callback(reg);
+      if (reg.installing) awaitStateChange();
+      reg.addEventListener('updatefound', awaitStateChange);
     }
 
-    if (reg.installing) {
-      console.log('there is installing');
-      // Ensure refresh is only called once.
-      // This works around a bug in "force update on reload".
-      var refreshing;
-      navigator.serviceWorker.addEventListener('controllerchange', function () {
+    // reload once when the new Service Worker starts activating
+    var refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange',
+      function () {
         if (refreshing) return;
-        window.location.reload();
         refreshing = true;
-      });
-      return;
+        window.location.reload();
+      }
+    );
+
+    function promptUserToRefresh(reg) {
+      // this is just an example
+      // don't use window.confirm in real life; it's terrible
+      if (window.confirm("New version available! OK to refresh?")) {
+        reg.waiting.postMessage('skipWaiting');
+      }
     }
+    listenForWaitingServiceWorker(reg, promptUserToRefresh);
 
   }).catch(function (err) {
     console.log('service worker register failed', err);
