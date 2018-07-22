@@ -182,6 +182,8 @@ nav h1 a {
   margin: 0;
   padding: 30px 15px 60px;
   text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 #restaurants-list li {
@@ -192,8 +194,6 @@ nav h1 a {
   min-height: 380px;
   padding: 0 30px 25px;
   text-align: left;
-  width: 270px;
-  display: inline-block;
 }
 
 #restaurants-list .restaurant-img {
@@ -298,6 +298,8 @@ nav h1 a {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   padding: 20px 40px 30px;
+  max-width: 500px;
+  margin: auto;
 }
 
 #reviews-container {
@@ -335,8 +337,59 @@ nav h1 a {
   color: #666;
 }
 
-@media all and (min-width: 900px) {
+
+/* Extra small devices (portrait phones, less than 576px) */
+
+@media (max-width: 575.98px) {
+  #restaurants-list {
+    grid-template-columns: 1fr;
+  }
+  .filter-options select,
+  .filter-options label {
+    display: block;
+    margin: auto
+  }
+  .inside #map-container{
+    height: 500px
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  #restaurants-list {
+    grid-template-columns: 1fr 1fr;
+  }
+  .inside #map-container{
+    height: 500px
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  #restaurants-list {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .inside #map-container{
+    height: 500px
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .inside #map-container{
+    height: 500px
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+
+@media (min-width: 1200px) {
   .inside #maincontent {
+    max-width: 1200px;
+    margin: 130px auto;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(2, minmax(300px, auto));
   }
@@ -346,8 +399,6 @@ nav h1 a {
     height: auto;
   }
 }
-
-
 
 .leaflet-container a {
   color: #000 !important;
